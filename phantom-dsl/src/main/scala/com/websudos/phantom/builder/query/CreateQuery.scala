@@ -159,7 +159,7 @@ sealed trait TablePropertyClauses extends CompactionStrategies with CompressionS
    *   import com.websudos.phantom.dsl._
    *   import com.twitter.conversions.storage._
    *
-   *   SomeTable.create.with(compression eqs SnappyCompressor.chunk_length_kb(50.kilobytes))
+   *   SomeTable.create.`with`(compression eqs SnappyCompressor.chunk_length_kb(50.kilobytes))
    *
    * }}}
    */
@@ -169,6 +169,21 @@ sealed trait TablePropertyClauses extends CompactionStrategies with CompressionS
     }
   }
 
+  /**
+   * Table creation clause allowing specification of CQL compaction strategies.
+   *
+   * <ul>
+   *   <li>SizeTieredCompactionStrategy</li>
+   *   <li>LeveledCompactionStrategy</li>
+   *   <li>DateTieredCompactionStrategy</li>
+   * </ul>
+   *
+   * {{{
+   *   import com.websudos.phantom.dsl._
+   *
+   *   SomeTable.create.`with`(compaction eqs SnappyCompressor)
+   * }}}
+   */
   object compaction extends TableProperty {
     def eqs(clause: CompactionStrategy): TablePropertyClause = {
       new TablePropertyClause(QueryBuilder.Create.compaction(clause.qb))
@@ -290,6 +305,11 @@ class CreateQuery[
 
   @implicitNotFound("You cannot use 2 `with` clauses on the same create query. Use `and` instead.")
   final def `with`(clause: TablePropertyClause)(implicit ev: Chain =:= WithUnchainned): CreateQuery[Table, Record, Status, WithChainned] = {
+    new CreateQuery(table, QueryBuilder.Create.`with`(qb, clause.qb))
+  }
+
+  @implicitNotFound("You cannot use 2 `with` clauses on the same create query. Use `and` instead.")
+  final def option(clause: TablePropertyClause)(implicit ev: Chain =:= WithUnchainned): CreateQuery[Table, Record, Status, WithChainned] = {
     new CreateQuery(table, QueryBuilder.Create.`with`(qb, clause.qb))
   }
 
