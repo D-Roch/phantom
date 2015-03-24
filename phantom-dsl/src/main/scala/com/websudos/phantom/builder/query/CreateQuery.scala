@@ -195,7 +195,7 @@ sealed trait TablePropertyClauses extends CompactionStrategies with CompressionS
 
   object replicate_on_write extends TableProperty {
     def apply(clause: Boolean): TablePropertyClause = {
-      new TablePropertyClause(QueryBuilder.Create.dclocal_read_repair_chance(clause.toString))
+      new TablePropertyClause(QueryBuilder.Create.replicate_on_write(clause.toString))
     }
 
     def eqs = apply _

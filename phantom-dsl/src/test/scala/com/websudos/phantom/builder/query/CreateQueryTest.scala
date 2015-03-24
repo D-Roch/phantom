@@ -53,7 +53,22 @@ class CreateQueryTest extends FreeSpec with Matchers {
         qb shouldEqual "CREATE TABLE phantom.BasicTable (id uuid, id2 uuid, id3 uuid, placeholder text, PRIMARY KEY (id, id2, id3)) WITH comment = 'testing'"
       }
 
-      "allow specifying custom gc_grace_seconds" in {
+      "allow specifying a read_repair_chance clause" in {
+        val qb = BasicTable.create.`with`(read_repair_chance eqs 5D).qb.queryString
+        qb shouldEqual "CREATE TABLE phantom.BasicTable (id uuid, id2 uuid, id3 uuid, placeholder text, PRIMARY KEY (id, id2, id3)) WITH read_repair_chance = 5.0"
+      }
+
+      "allow specifying a dclocal_read_repair_chance clause" in {
+        val qb = BasicTable.create.`with`(dclocal_read_repair_chance eqs 5D).qb.queryString
+        qb shouldEqual "CREATE TABLE phantom.BasicTable (id uuid, id2 uuid, id3 uuid, placeholder text, PRIMARY KEY (id, id2, id3)) WITH dclocal_read_repair_chance = 5.0"
+      }
+
+      "allow specifying a replicate_on_write clause" in {
+        val qb = BasicTable.create.`with`(replicate_on_write eqs true).qb.queryString
+        qb shouldEqual "CREATE TABLE phantom.BasicTable (id uuid, id2 uuid, id3 uuid, placeholder text, PRIMARY KEY (id, id2, id3)) WITH replicate_on_write = true"
+      }
+
+      "allow specifying a custom gc_grace_seconds clause" in {
         val qb = BasicTable.create.`with`(gc_grace_seconds eqs 5.seconds).qb.queryString
         qb shouldEqual "CREATE TABLE phantom.BasicTable (id uuid, id2 uuid, id3 uuid, placeholder text, PRIMARY KEY (id, id2, id3)) WITH gc_grace_seconds = 5"
       }
