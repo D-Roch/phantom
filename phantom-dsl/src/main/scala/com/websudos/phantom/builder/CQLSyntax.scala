@@ -63,6 +63,7 @@ object CQLSyntax {
   }
 
   object Symbols {
+    val `*` = "*"
     val `{` = "{"
     val `}` = "}"
     val `[` = "["

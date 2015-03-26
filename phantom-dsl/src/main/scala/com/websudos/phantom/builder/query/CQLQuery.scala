@@ -27,6 +27,9 @@ case class CQLQuery(queryString: String) {
   def forcePad: CQLQuery = CQLQuery(queryString + " ")
   def trim: CQLQuery = CQLQuery(queryString.trim)
 
+
+
+  def wrapn(str: String): CQLQuery = pad.append(CQLSyntax.`(`).append(str).append(CQLSyntax.`)`)
   def wrap(str: String): CQLQuery = pad.append(CQLSyntax.`(`).append(str).append(CQLSyntax.`)`)
   def wrap(query: CQLQuery): CQLQuery = wrap(query.queryString)
   def wrap[T](list: T)(implicit ev1: T => TraversableOnce[String]): CQLQuery = wrap(list.mkString(", "))
